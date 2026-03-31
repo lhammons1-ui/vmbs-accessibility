@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creating Accessible Courses in Canvas</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --maroon: #500000;
+    --maroon-light: #7a1a1a;
+    --maroon-pale: #f9f0f0;
+    --maroon-mid: #c8a0a0;
+    --gold: #C09B50;
+    --gold-light: #e8d5a3;
+    --dark: #1a1a1a;
+    --mid: #555;
+    --light: #f4f1ee;
+    --white: #ffffff;
+    --border: #ddd5cc;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background: var(--light);
+    color: var(--dark);
+    min-height: 100vh;
+    padding: 48px 32px 64px;
+  }
+
+  /* ── Header ── */
+  .header {
+    text-align: center;
+    margin-bottom: 56px;
+    position: relative;
+  }
+  .header::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 3px;
+    background: var(--gold);
+    margin: 20px auto 0;
+  }
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--maroon);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+  .header p {
+    font-size: 0.95rem;
+    color: var(--mid);
+    margin-top: 8px;
+    font-weight: 300;
+    font-style: italic;
+  }
+
+  /* ── Steps container ── */
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    max-width: 860px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  /* Vertical spine */
+  .steps::before {
+    content: '';
+    position: absolute;
+    left: 36px;
+    top: 52px;
+    bottom: 52px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--maroon) 0%, var(--gold) 100%);
+    opacity: 0.25;
+  }
+
+  /* ── Step card ── */
+  .step {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    position: relative;
+    animation: fadeUp 0.5s ease both;
+  }
+  .step:nth-child(1) { animation-delay: 0.05s; }
+  .step:nth-child(2) { animation-delay: 0.15s; }
+  .step:nth-child(3) { animation-delay: 0.25s; }
+  .step:nth-child(4) { animation-delay: 0.35s; }
+  .step:nth-child(5) { animation-delay: 0.45s; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Number badge */
+  .step-num {
+    flex-shrink: 0;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--maroon);
+    color: var(--white);
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 4px 16px rgba(80,0,0,0.2);
+    margin-top: 4px;
+  }
+  .step-num.gold {
+    background: var(--gold);
+    color: var(--dark);
+  }
+
+  /* Connector line between badge and next */
+  .connector {
+    display: flex;
+    justify-content: flex-start;
+    padding-left: 25px;
+    height: 32px;
+    position: relative;
+    z-index: 1;
+  }
+  .connector::before {
+    content: '';
+    width: 2px;
+    height: 100%;
+    background: var(--border);
+  }
+
+  /* Card body */
+  .step-body {
+    flex: 1;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px 22px;
+    margin-bottom: 8px;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .step-body:hover {
+    box-shadow: 0 6px 24px rgba(80,0,0,0.10);
+    transform: translateX(3px);
+  }
+  .step-body::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 14px; bottom: 14px;
+    width: 4px;
+    border-radius: 0 2px 2px 0;
+    background: var(--maroon);
+    opacity: 0.7;
+  }
+
+  .step-label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+  .step-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    color: var(--maroon);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .step-desc {
+    font-size: 0.88rem;
+    color: var(--mid);
+    line-height: 1.55;
+    font-weight: 300;
+  }
+
+  /* Tags / sub-items */
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+  }
+  .tag {
+    font-size: 0.75rem;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: var(--maroon-pale);
+    color: var(--maroon-light);
+    border: 1px solid var(--maroon-mid);
+    font-weight: 400;
+  }
+  .tag.branch {
+    background: #f0f4f0;
+    color: #2a5a2a;
+    border-color: #aacaaa;
+  }
+  .tag.tool {
+    background: #f0f2f8;
+    color: #2a3a6a;
+    border-color: #aabada;
+  }
+
+  /* ── Branch box (Step 2) ── */
+  .branch-box {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 8px;
+    flex: 1;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .branch-header {
+    background: var(--maroon-pale);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--maroon);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .branch-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .branch-col {
+    padding: 16px 18px;
+  }
+  .branch-col + .branch-col {
+    border-left: 1px solid var(--border);
+  }
+  .branch-col-title {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--maroon);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .branch-col-title span {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--maroon);
+    color: white;
+    font-size: 0.65rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .branch-items {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .branch-items li {
+    font-size: 0.78rem;
+    color: var(--mid);
+    padding-left: 18px;
+    position: relative;
+    line-height: 1.5;
+    font-weight: 300;
+    margin-bottom: 2px;
+  }
+  .branch-items li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+    font-size: 1rem;
+    font-weight: 700;
+    top: -1px;
+    line-height: 1.4;
+  }
+
+  /* sub-branch within existing course */
+  .sub-branch {
+    margin-top: 10px;
+    border-top: 1px dashed var(--border);
+    padding-top: 10px;
+  }
+  .sub-branch-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--mid);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+
+  /* ── Get Help card ── */
+  .help-body {
+    background: var(--maroon);
+    color: var(--white);
+    border-radius: 12px;
+    padding: 20px 24px;
+    flex: 1;
+    margin-bottom: 8px;
+    box-shadow: 0 4px 20px rgba(80,0,0,0.2);
+  }
+  .help-body .step-label { color: var(--gold-light); }
+  .help-body .step-title { color: var(--white); font-size: 1.1rem; }
+  .help-body .step-desc { color: rgba(255,255,255,0.75); }
+  .help-body .tag {
+    background: rgba(255,255,255,0.12);
+    color: var(--white);
+    border-color: rgba(255,255,255,0.25);
+  }
+
+  /* ── Legend ── */
+  .legend {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 40px;
+    flex-wrap: wrap;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    color: var(--mid);
+  }
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Creating Accessible Courses in Canvas</h1>
+  <p>A Practical Guide for Instructors</p>
+</div>
+
+<div class="steps">
+
+  <!-- STEP 1 -->
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <div class="step-label">Step 1</div>
+      <div class="step-title">Adopt an Accessibility Mindset</div>
+      <div class="step-desc">Accessibility is a legal requirement and benefits every student. Treat it as an ongoing practice, not a one-time task.</div>
+      <div class="tags">
+        <span class="tag">Required by law</span>
+        <span class="tag">Benefits all students</span>
+        <span class="tag">Ongoing process</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector"></div>
+
+  <!-- STEP 2 -->
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="branch-box">
+      <div class="branch-header">Step 2 — Plan &amp; Prioritize</div>
+      <div class="branch-cols">
+
+        <!-- New course -->
+        <div class="branch-col">
+          <div class="branch-col-title"><span>A</span> New Course</div>
+          <ul class="branch-items">
+            <li>Start with the University Canvas Template</li>
+            <li>Create accessible content from the start</li>
+            <li>Export PDFs properly (Save As, not Print)</li>
+            <li>Link to PDFs — don't upload them</li>
+            <li>Use Ally to check as you build</li>
+          </ul>
+        </div>
+
+        <!-- Existing course -->
+        <div class="branch-col">
+          <div class="branch-col-title"><span>B</span> Existing Course</div>
+
+          <div class="sub-branch-label">New Semester</div>
+          <ul class="branch-items">
+            <li>Start fresh with Canvas Template, or</li>
+            <li>Smart Copy content you'll reuse</li>
+            <li>Run Ally Course Report</li>
+            <li>Prioritize: core docs → quick wins → complex</li>
+            <li>Update content before adding to Canvas</li>
+          </ul>
+
+          <div class="sub-branch">
+            <div class="sub-branch-label">Mid-Semester</div>
+            <ul class="branch-items">
+              <li>Remove unused files with TidyUp</li>
+              <li>Run Ally Course Report</li>
+              <li>Prioritize: core docs → quick wins → complex</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="connector"></div>
+
+  <!-- STEP 3 -->
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <div class="step-label">Step 3</div>
+      <div class="step-title">Apply Accessibility Guidelines</div>
+      <div class="step-desc">Follow these standards when creating or updating any content in Canvas.</div>
+      <div class="tags">
+        <span class="tag">Headings &amp; structure</span>
+        <span class="tag">Alt text</span>
+        <span class="tag">Color contrast</span>
+        <span class="tag">Descriptive links</span>
+        <span class="tag">Accessible tables</span>
+        <span class="tag">Captions &amp; transcripts</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector"></div>
+
+  <!-- STEP 4 -->
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-body">
+      <div class="step-label">Step 4</div>
+      <div class="step-title">Address Common Accessibility Issues</div>
+      <div class="step-desc">Work through issues identified in your Ally Course Report. Tackle the most impactful items first.</div>
+      <div class="tags">
+        <span class="tool tag">Ally in Canvas</span>
+        <span class="tool tag">Adobe Acrobat</span>
+        <span class="tool tag">MS Accessibility Checker</span>
+        <span class="tag">Scanned PDFs (OCR)</span>
+        <span class="tag">Video captions</span>
+        <span class="tag">Math notation</span>
+        <span class="tag">Untagged PDFs</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector"></div>
+
+  <!-- GET HELP -->
+  <div class="step">
+    <div class="step-num gold">★</div>
+    <div class="help-body">
+      <div class="step-label">Support</div>
+      <div class="step-title">Get Help</div>
+      <div class="step-desc">Complex issues? Reach out. TAMU main campus: digitalaccessibility@tamu.edu &nbsp;|&nbsp; VMBS: vmbs-edtech@tamu.edu</div>
+      <div class="tags" style="margin-top:12px;">
+        <span class="tag">Drop-in office hours</span>
+        <span class="tag">Training workshops</span>
+        <span class="tag">VMBS EdTech support</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+</body>
+</html>
